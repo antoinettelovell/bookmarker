@@ -2,6 +2,28 @@
 
 //Event Listener for form submit
 document.querySelector("#myForm").addEventListener("submit", saveBookmark);
+
+// event listener for filter
+document.querySelector("#filter").addEventListener("keyup", filterBookmarks);
+
+// filter bookmarks
+function filterBookmarks(){
+    // console.log("hello from filter");
+   var filterValue = document.querySelector("#filter").value.toUpperCase();
+       // console.log(filterValue);
+   var bookmarkNames = document.querySelectorAll(".name");
+//    console.log(bookmarkNames);
+
+    for(var i = 0;i < bookmarkNames.length; i++){
+        var name = bookmarkNames[i].textContent.toUpperCase();
+        if(name.includes(filterValue)){
+            bookmarkNames[i].parentElement.style.display = "block";
+        }else{
+            bookmarkNames[i].parentElement.style.display = "none";
+        }          
+    }
+} 
+
 // Save Bookmarks
 function saveBookmark(e){
     e.preventDefault();
@@ -63,24 +85,41 @@ function saveBookmark(e){
         var bookmarksResult = document.querySelector("#bookmarksResult");
 
         // console.log(bookmarksResult);
+
         //reset the output div
         bookmarksResult.innerHTML ="";
         //loop through bookmarks
         for(var i = 0; i < bookmarks.length; i++){
         var name = bookmarks[i].name;
         var url = bookmarks[i].url;
-        bookmarksResult.innerHTML +=
-        '<div>' +
-        '<h3>' +
-        name + ' ' +
-        '<a class ="btn btn-success" href ="'+
-        url +
-        '">Visit</a>  ' + 
-        '<button class="btn btn-danger" onclick="deleteBookmark(\''+name+ "')\">Delete</button>" +
-        '</h3>' +
-        '</div>';
-        }
+        
+        // create div
+        var div = document.createElement("div");
+        // create h3
+        var h3 = document.createElement("h3");
+        h3.textContent = name;
+        h3.className = "name";
+        // create link
+        var a = document.createElement("a");
+        a.href = url;
+        a.className = "btn btn-success";
+        a.textContent = "Visit";
+
+        // create button
+        var button = document.createElement("button");
+        button.className = "btn btn-danger";
+        button.textContent = "Delete";
+        button.addEventListener("click", function(e){
+        var siteName = e.target.parentElement.children[0].textContent;
+        deleteBookmark(siteName);
+        });
+
+        div.appendChild(h3);
+        div.appendChild(a);
+        div.appendChild(button);
+        bookmarksResult.append(div);
     }
+}   
 
     function deleteBookmark(name){
        //console.log(name);
